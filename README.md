@@ -59,8 +59,6 @@ huggingface-cli download VIPL-GENUN/Jodi
 python app/jodi_gradio.py --model_path hf://VIPL-GENUN/Jodi/Jodi.pth
 ```
 
-*Requires at least 16GB / 30GB / 48GB GPU VRAM to generate a batch of one / four / eight 1024x1024 images.*
-
 
 
 ## 🪧 Acknowledgement

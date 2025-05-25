@@ -3,6 +3,7 @@ came_pytorch==0.1.3
 einops==0.8.1
 diffusers@git+https://github.com/huggingface/diffusers
 clip@git+https://github.com/openai/CLIP.git
+pydantic==2.10.6
 gradio==5.20.0
 ipdb==0.13.13
 h5py==3.13.0
