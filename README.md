@@ -8,7 +8,7 @@
 > <sup>2</sup>University of Chinese Academy of Sciences, China
 
 <p align="center">
-    <img src="./assets/overview.jpg" alt="overview" style="width: 100%" />
+    <img src="./assets/banner.jpg" alt="banner" style="width: 100%" />
 </p>
 
 
