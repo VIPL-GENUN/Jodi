@@ -1,9 +1,8 @@
-<div align="center">
-<br/>
-<img src="assets/logo.png" width="166">
-</div>
+<h1 align="center">
+<a href="https://github.com/VIPL-GENUN/Jodi"><img src="assets/logo.png" width="166"></a>
+</h1>
 
-> **[Jodi: Unification of Visual Generation and Understanding via Joint Modeling](https://github.com/xyfJASON/Jodi)** \
+> **[Jodi: Unification of Visual Generation and Understanding via Joint Modeling](https://github.com/VIPL-GENUN/Jodi)** \
 > [Yifeng Xu](https://xyfjason.github.io/homepage)<sup>1,2</sup>, [Zhenliang He](https://lynnho.github.io)<sup>1</sup>, [Meina Kan](https://scholar.google.com/citations?user=4AKCKKEAAAAJ)<sup>1,2</sup>, [Shiguang Shan](https://scholar.google.com/citations?user=Vkzd7MIAAAAJ)<sup>1,2</sup>, [Xilin Chen](https://scholar.google.com/citations?user=vVx2v20AAAAJ)<sup>1,2</sup> \
 > <sup>1</sup>State Key Lab of AI Safety, Institute of Computing Technology, CAS, China \
 > <sup>2</sup>University of Chinese Academy of Sciences, China
