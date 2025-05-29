@@ -15,6 +15,16 @@
     <img src="./assets/banner.jpg" alt="banner" style="width: 100%" />
 </p>
 
+We introduce Jodi, a diffusion framework that unifies visual generation and understanding by jointly modeling the image domain and multiple label domains. Jodi is built upon a linear diffusion transformer with a role switch mechanism, enabling joint generation, controllable generation, and image perception tasks in a unified diffusion model.
+
+
+
+## 💥 News
+
+- **[TODO]**: Release the training code.
+- **[TODO]**: Release the Joint-1.6M dataset.
+- **[2025-05-27]**: The [arXiv paper](https://arxiv.org/abs/2505.19084), [model weights](https://huggingface.co/VIPL-GENUN/Jodi) and inference code are released.
+
 
 
 ## 🛠️ Installation
