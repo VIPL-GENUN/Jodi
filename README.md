@@ -15,7 +15,7 @@
     <img src="./assets/banner.jpg" alt="banner" style="width: 100%" />
 </p>
 
-We introduce Jodi, a diffusion framework that unifies visual generation and understanding by jointly modeling the image domain and multiple label domains. Jodi is built upon a linear diffusion transformer with a role switch mechanism, enabling joint generation, controllable generation, and image perception within a unified diffusion model.
+We introduce Jodi, a diffusion framework that unifies visual generation and understanding by jointly modeling the image domain and multiple label domains. Jodi is built upon a linear diffusion transformer with a role switch mechanism, enabling joint generation, controllable generation, and image perception in a unified diffusion model.
 
 
 
