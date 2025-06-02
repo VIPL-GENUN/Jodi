@@ -21,8 +21,8 @@ We introduce Jodi, a diffusion framework that unifies visual generation and unde
 
 ## 💥 News
 
-- **[TODO]**: Release the training code.
 - **[TODO]**: Release the Joint-1.6M dataset.
+- **[2025-06-02]**: Release the training code. 🔥
 - **[2025-05-27]**: The [arXiv paper](https://arxiv.org/abs/2505.19084), [model weights](https://huggingface.co/VIPL-GENUN/Jodi), and inference code are released.
 
 
@@ -105,7 +105,7 @@ Each line in `metadata.jsonl` is a dictionary containing paths to an image and i
   "caption": {"Qwen2-VL-7b-Instruct": "xxxxxxxx", "BLIP2-OPT-2.7b": "yyy"},
   "annotation_edge": "annotation_edge/0adbfa3cab59b674b83f24a7964ae23f.jpg",
   "annotation_depth": "annotation_depth/0adbfa3cab59b674b83f24a7964ae23f.jpg",
-  ...
+  // ...
 }
 ```
 
