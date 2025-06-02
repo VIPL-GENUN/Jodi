@@ -36,30 +36,21 @@ class JodiDataset(Dataset):
 
     ```
         data_dir
-        ├── image.jsonl
+        ├── metadata.jsonl
         ├── image
         │   ├── <dir_1>/<name_1>.jpg
-        │   ├── <dir_1>/<name_1>.jpg.caption.json
-        │   ├── <dir_1>/<name_1>.jpg.info.json
         │   ├── <dir_2>/<name_2>.jpg
-        │   ├── <dir_2>/<name_2>.jpg.caption.json
-        │   ├── <dir_2>/<name_2>.jpg.info.json
         │   └── ...
-        ├── annotation_<CONDITION_1>.jsonl
         ├── annotation_<CONDITION_1>
         │   ├── <dir_1>/<name_1>.jpg
         │   ├── <dir_2>/<name_2>.jpg
         │   └── ...
-        ├── annotation_<CONDITION_2>.jsonl
         ├── annotation_<CONDITION_2>
         │   ├── <dir_1>/<name_1>.jpg.png
         │   ├── <dir_2>/<name_2>.jpg.png
         │   └── ...
         └── ...
     ```
-
-    Each line in jsonl file is `{"image_name": "<dir>/<name>.jpg"}`.
-    Each caption.json file is `{"<model_name_1>": "<caption>", "<model_name_2>": "<caption>"}`.
 
     """
 
@@ -101,67 +92,33 @@ class JodiDataset(Dataset):
         self.repeat_time = repeat_time
         self.use_empty_openpose_image = use_empty_openpose_image
 
-        self.data = self.load_data()
-        self.data = self.data * repeat_time
+        self.meta_data = self.load_meta_data()
+        self.meta_data = self.meta_data * repeat_time
 
         self.role_cond_gen = get_combinition(len(self.conditions)) + 1  # (2^K, K)
         self.role_img_perc = get_combinition(len(self.conditions)) * 2  # (2^K, K)
 
-    def load_data(self):
-        data = {}
+    def load_meta_data(self):
+        meta_data = []
         jsonl_ext = ".jsonl" if self.split is None else f".{self.split}.jsonl"
-
-        if os.path.isdir(os.path.join(self.data_dir, "image_original_size_png")):
-            imagedir = os.path.join(self.data_dir, "image_original_size_png")
-            imagejson = os.path.join(self.data_dir, "image_original_size_png" + jsonl_ext)
-        else:
-            imagedir = os.path.join(self.data_dir, "image")
-            imagejson = os.path.join(self.data_dir, "image" + jsonl_ext)
-        assert os.path.isdir(imagedir), f"Image directory {imagedir} does not exist."
-        assert os.path.isfile(imagejson), f"Image json file {imagejson} does not exist."
-        with open(imagejson, "r", encoding="utf-8") as f:
+        metadata_file = os.path.join(self.data_dir, "metadata" + jsonl_ext)
+        with open(metadata_file, "r", encoding="utf-8") as f:
             for line in f:
-                image_name = json.loads(line)["image_name"]
-                image_id = clean_filename(image_name)
-                image_path = os.path.join(imagedir, image_name)
-                caption_path = image_path + ".caption.json"
-                info_path = image_path + ".info.json"
-                data[image_id] = {"image_path": image_path, "caption_path": caption_path, "info_path": info_path}
-                assert os.path.isfile(image_path), f"Image path {image_path} does not exist."
-                assert os.path.isfile(caption_path), f"Caption path {caption_path} does not exist."
-                assert os.path.isfile(info_path), f"Info path {info_path} does not exist."
-
-        for condition in self.conditions:
-            anndir = os.path.join(self.data_dir, f"annotation_{condition}")
-            annjson = os.path.join(self.data_dir, f"annotation_{condition}" + jsonl_ext)
-            if os.path.isfile(annjson) and os.path.isdir(anndir):
-                with open(annjson, "r", encoding="utf-8") as f:
-                    for line in f:
-                        image_name = json.loads(line)["image_name"]
-                        image_id = clean_filename(image_name)
-                        ann_path = os.path.join(anndir, image_name)
-                        if image_id in data:
-                            data[image_id].update({f"ann_path_{condition}": ann_path})
-                            assert os.path.isfile(ann_path), f"Ann path {ann_path} does not exist."
-
-        data = list(data.items())
-        return data
+                meta_data.append(json.loads(line))
+        return meta_data
 
     def __len__(self):
-        return len(self.data)
+        return len(self.meta_data)
 
     def __getitem__(self, index: int):
-        image_id, info = self.data[index]
-        image_path = info["image_path"]
+        data = self.meta_data[index]
+        transform = self.get_transform(data["info"]["height"], data["info"]["width"])
 
-        with open(info["info_path"], "r", encoding="utf-8") as f:
-            image_info = json.load(f)
-        transform = self.get_transform(image_info["height"], image_info["width"])
-
-        img = [transform(Image.open(image_path).convert("RGB"))]
+        img_path = os.path.join(self.data_dir, data["image"])
+        img = [transform(Image.open(img_path).convert("RGB"))]
         role, cnt = [], 0
         for condition in self.conditions:
-            ann_path = info.get(f"ann_path_{condition}", None)  # noqa
+            ann_path = data.get(f"annotation_{condition}", None)
             if ann_path is None:
                 if self.use_empty_openpose_image and "openpose" in condition:
                     h, w = img[0].shape[-2:] if isinstance(img[0], torch.Tensor) else (img[0].height, img[0].width)
@@ -172,24 +129,22 @@ class JodiDataset(Dataset):
                     img.append(torch.zeros_like(img[0]) if isinstance(img[0], torch.Tensor) else None)
                     role.append(2)
             else:
+                ann_path = os.path.join(self.data_dir, ann_path)
                 img.append(transform(Image.open(ann_path).convert("RGB")))
                 role.append(None)
                 cnt += 1
+        img = torch.stack(img, dim=0)  # (1+K, C, H, W)
 
-        if isinstance(img[0], torch.Tensor):
-            img = torch.stack(img, dim=0)  # (1+K, C, H, W)
-
-        with open(info["caption_path"], "r", encoding="utf-8") as f:
-            text_dict = json.load(f)
-            if self.caption_model_probs is not None:
-                p = list(self.caption_model_probs.values())
-                p = np.array(p) / np.sum(p)
-                caption_model_id = np.random.choice(len(self.caption_model_probs), p=p)
-                caption_model_key = list(self.caption_model_probs.keys())[caption_model_id]
-            else:
-                caption_model_id = np.random.randint(0, len(text_dict))
-                caption_model_key = list(text_dict.keys())[caption_model_id]
-            text = text_dict[caption_model_key]
+        text_dict = data["caption"]
+        if self.caption_model_probs is not None:
+            p = list(self.caption_model_probs.values())
+            p = np.array(p) / np.sum(p)
+            caption_model_id = np.random.choice(len(self.caption_model_probs), p=p)
+            caption_model_key = list(self.caption_model_probs.keys())[caption_model_id]
+        else:
+            caption_model_id = np.random.randint(0, len(text_dict))
+            caption_model_key = list(text_dict.keys())[caption_model_id]
+        text = text_dict[caption_model_key]
 
         task = self.tasks[np.random.randint(len(self.tasks))]
         if task == "j":  # joint generation
@@ -226,10 +181,8 @@ class JodiDataset(Dataset):
         ])
 
     def get_data_info(self, index: int):
-        image_id, info = self.data[index]
-        with open(info["info_path"], "r", encoding="utf-8") as f:
-            image_info = json.load(f)
-        return {"height": image_info["height"], "width": image_info["width"]}
+        data = self.meta_data[index]
+        return {"height": data["info"]["height"], "width": data["info"]["width"]}
 
     @staticmethod
     def get_empty_openpose_image(h, w):  # pure black image
