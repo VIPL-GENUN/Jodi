@@ -75,6 +75,66 @@ python app/jodi_gradio.py --model_path hf://VIPL-GENUN/Jodi/Jodi.pth
 
 
 
+## 🔥 Training
+
+### Step 1: Data Preparation
+
+We provide a small example dataset in `assets/example_data` with the following file structure:
+
+```text
+assets/example_data
+├── metadata.jsonl
+├── images
+│   ├── 0adbfa3cab59b674b83f24a7964ae23f.jpg
+│   ├── 0aded2a84831be7b912ef85f6c1eb6e2.jpg
+│   └── 0adf204564879c270bafba334ca99e3c.jpg
+├── annotation_edge
+│   └── (same as images)
+├── annotation_depth
+│   └── (same as images)
+└── ...
+```
+
+The code will load the data based on `metadata.jsonl`.
+Each line in `metadata.jsonl` is a dictionary containing paths to an image and its annotations (labels), height and width, and captions from different models. For example:
+
+```json
+{
+  "image": "images/0adbfa3cab59b674b83f24a7964ae23f.jpg",
+  "info": {"height": 1280, "width": 1024},
+  "caption": {"Qwen2-VL-7b-Instruct": "xxxxxxxx", "BLIP2-OPT-2.7b": "yyy"},
+  "annotation_edge": "annotation_edge/0adbfa3cab59b674b83f24a7964ae23f.jpg",
+  "annotation_depth": "annotation_depth/0adbfa3cab59b674b83f24a7964ae23f.jpg",
+  ...
+}
+```
+
+### Step 2: Download Models
+
+Jodi is built on top of [Sana](https://huggingface.co/Efficient-Large-Model/Sana_1600M_1024px_BF16).
+You can either finetune Jodi on your data or directly train your model from Sana.
+
+```shell
+# download Jodi
+huggingface-cli download VIPL-GENUN/Jodi
+# download Sana
+huggingface-cli download Efficient-Large-Model/Sana_1600M_1024px_BF16
+```
+
+### Step 3: Start Training
+
+```shell
+# finetune Jodi
+bash scripts/train_from_jodi.sh
+# or train from Sana
+bash scripts/train_from_sana.sh
+```
+
+By default, these scripts will train the model on the example dataset.
+It is recommended to try to overfit the model on the example dataset first, and then train on your own dataset.
+
+
+
 ## 🪧 Acknowledgement
 
 This project is built upon [Sana](https://github.com/NVlabs/Sana). Thanks for their great work!

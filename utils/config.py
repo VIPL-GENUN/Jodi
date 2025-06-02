@@ -128,13 +128,9 @@ class TrainingConfig(BaseConfig):
     validation_prompts: List[str] = field(
         default_factory=lambda: [
             "cat",
-            "child africa, double exposure",
             "colorful psychedelic mushrooms in a forest at night",
             "A hot air balloon in the shape of a heart. Grand Canyon",
-            "a blue Porsche 356 parked in front of a yellow brick wall.",
             "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
-            "an old rusted robot wearing pants and a jacket riding skis in a supermarket.",
-            "A portrait of a human growing colorful flowers from her hair. Hyperrealistic oil painting. Intricate details.",
         ]
     )
     work_dir: str = "/cache/exps/"
