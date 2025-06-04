@@ -98,13 +98,14 @@ assets/example_data
 The code will load the data based on `metadata.jsonl`.
 Each line in `metadata.jsonl` is a dictionary containing paths to an image and its annotations (labels), height and width, and captions from different models. For example:
 
-```json
+```python
 {
   "image": "images/0adbfa3cab59b674b83f24a7964ae23f.jpg",
   "info": {"height": 1280, "width": 1024},
   "caption": {"Qwen2-VL-7b-Instruct": "xxxxxxxx", "BLIP2-OPT-2.7b": "yyy"},
   "annotation_edge": "annotation_edge/0adbfa3cab59b674b83f24a7964ae23f.jpg",
-  "annotation_depth": "annotation_depth/0adbfa3cab59b674b83f24a7964ae23f.jpg"
+  "annotation_depth": "annotation_depth/0adbfa3cab59b674b83f24a7964ae23f.jpg",
+  # ...
 }
 ```
 
