@@ -80,12 +80,12 @@ python app/jodi_gradio.py --model_path hf://VIPL-GENUN/Jodi/Jodi.pth
 ### Step 1: Data Preparation
 
 We provide the Joint-1.6M dataset on [HuggingFace](https://huggingface.co/datasets/VIPL-GENUN/Joint-1.6M-1024px).
-To help you get started quickly, we also provide a small example dataset in `assets/example_data` with the same file structure as the Joint-1.6M dataset.
+To help you get started quickly, we also provide a small example dataset in [assets/example_data](./assets/example_data) with the same file structure as the Joint-1.6M dataset.
 
 ```text
 assets/example_data
 ├── metadata.jsonl
-├── images
+├── image
 │   ├── 0adbfa3cab59b674b83f24a7964ae23f.jpg
 │   ├── 0aded2a84831be7b912ef85f6c1eb6e2.jpg
 │   └── 0adf204564879c270bafba334ca99e3c.jpg
@@ -101,7 +101,7 @@ Each line in `metadata.jsonl` is a dictionary containing paths to an image and i
 
 ```python
 {
-  "image": "images/0adbfa3cab59b674b83f24a7964ae23f.jpg",
+  "image": "image/0adbfa3cab59b674b83f24a7964ae23f.jpg",
   "info": {"height": 1280, "width": 1024},
   "caption": {"Qwen2-VL-7b-Instruct": "xxxxxxxx", "BLIP2-OPT-2.7b": "yyy"},
   "annotation_edge": "annotation_edge/0adbfa3cab59b674b83f24a7964ae23f.jpg",
