@@ -152,7 +152,7 @@ If you find this project helpful, please consider citing:
 @article{xu2025jodi,
   title={Jodi: Unification of Visual Generation and Understanding via Joint Modeling},
   author={Xu, Yifeng and He, Zhenliang and Kan, Meina and Shan, Shiguang and Chen, Xilin},
-  journal={arXiv preprint arXiv:2505.19084},
+  journal={arXiv:2505.19084},
   year={2025}
 }
 ```
